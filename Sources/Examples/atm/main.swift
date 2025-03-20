@@ -8,25 +8,20 @@
 import Foundation
 import SwiftSessions
 
-func IsEvenWithClosures() async {
-    await Session.create { e in
-        // One side of the communication channel
-        await Session.recv(from: e) { num, e in
-            await Session.send(num % 2 == 0, on: e) { e in
-                print("hi from server")
-                Session.close(e)
-            }
-        }
-    } _: { e in
-        // Another side of the communication channel
-        await Session.send(42, on: e) { e in
-            await Session.recv(from: e) { isEven, e in
-                Session.close(e)
-                print("hi from client")
-                assert(isEven == true)
-            }
-        }
+func simpleExample() async {
+    typealias Protocol = Endpoint<Empty, (String, Endpoint<(String, Endpoint<Empty, Empty>), Empty>)>
+    
+    let e = await Session.create { (e:Protocol) in
+        let (msg, e1) = await Session.recv(from: e)
+        let e2 = await Session.send("Hello \(msg)!", on: e1)
+        Session.close(e2)
     }
+   
+    let e1 = await Session.send("world", on: e)
+    let (reply, e2) = await Session.recv(from: e1)
+    Session.close(e2)
+    
+    print(reply)
 }
 
-await IsEvenWithClosures()
+await simpleExample()
