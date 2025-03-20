@@ -30,5 +30,10 @@ let package = Package(
             "SwiftSessions",
             .product(name: "AsyncAlgorithms", package: "swift-async-algorithms"),
         ]),
+       
+        
+        .executableTarget(name: "atm",
+                          dependencies: ["SwiftSessions"],
+                          path: "Sources/Examples")
     ]
 )
