@@ -9,7 +9,7 @@ import Foundation
 import AsyncAlgorithms
 
 /// A utility class for implementing session-based communications using channels
-class Session {
+public class Session {
     
     /// Creates a new session with two dual endpoints and executes the provided closures on each endpoint
     ///
@@ -20,7 +20,7 @@ class Session {
     /// - Parameters:
     ///   - sideOne: The closure to be executed on the secondary endpoint of type `Channel<B, A>`.
     ///   - sideTwo: The closure to be executed on the primary endpoint of type `Endpoint<A, B>`.
-    static func create<A, B>(_ sideOne: @escaping (_: Endpoint<B, A>) async -> Void, _ sideTwo: @escaping (_: Endpoint<A, B>) async -> Void) async {
+    public static func create<A, B>(_ sideOne: @escaping (_: Endpoint<B, A>) async -> Void, _ sideTwo: @escaping (_: Endpoint<A, B>) async -> Void) async {
         let channel: AsyncChannel<Sendable> = AsyncChannel()
         let endpoint1 = Endpoint<A, B>(with: channel)
         let endpoint2 = Endpoint<B, A>(with: channel)
@@ -35,7 +35,7 @@ class Session {
     /// Creates a new session with two dual endpoints and executes the provided closure on the secondary endpoint
     /// - Parameter closure: The closure to be executed on the secondary endpoint of type `Endpoint<B, A>`
     /// - Returns: The primary endpoint of type `Endpoint<A, B>`
-    static func create<A, B>(_ closure: @escaping (_: Endpoint<B, A>) async -> Void) async -> Endpoint<A, B> {
+    public static func create<A, B>(_ closure: @escaping (_: Endpoint<B, A>) async -> Void) async -> Endpoint<A, B> {
         let channel: AsyncChannel<Sendable> = AsyncChannel()
         let e1 = Endpoint<A, B>(with: channel)
         let e2 = Endpoint<B, A>(with: channel)
@@ -51,7 +51,7 @@ class Session {
     /// These endpoint are linked such that any message sent on one can be received on the other.
     ///
     /// - Returns: A tuple containing two endpoints: the first of type `Endpoint<A, B>` and the second of type `Endpoint<B, A>`.
-    static func create<A, B>() -> (Endpoint<A, B>, Endpoint<B, A>) {
+    public static func create<A, B>() -> (Endpoint<A, B>, Endpoint<B, A>) {
         let channel: AsyncChannel<Sendable> = AsyncChannel()
         let e1 = Endpoint<A, B>(with: channel)
         let e2 = Endpoint<B, A>(with: channel)
@@ -60,7 +60,7 @@ class Session {
     
     /// Closes the endpoint, indicating the end of communication.
     /// - Parameter endpoint: The endpoint to close the communication.
-    static func close(_ endpoint: Endpoint<Empty, Empty>) {
+    public static func close(_ endpoint: Endpoint<Empty, Empty>) {
         endpoint.close()
     }
     

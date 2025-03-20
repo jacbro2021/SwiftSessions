@@ -8,6 +8,6 @@
 import Foundation
 
 /// Represents an empty type used for parts of an endpoint where no message sending or receiving is allowed.
-enum Empty {
+public enum Empty {
     
 }
