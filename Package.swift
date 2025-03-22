@@ -32,9 +32,9 @@ let package = Package(
         ]),
         .executableTarget(name: "atm",
                           dependencies: ["SwiftSessions"],
-                          path: "Sources/Examples"),
+                          path: "Sources/Examples/atm"),
         .executableTarget(name: "ftp",
                           dependencies: ["SwiftSessions"],
-                          path: "Sources/Examples")
+                          path: "Sources/Examples/ftp")
     ]
 )
