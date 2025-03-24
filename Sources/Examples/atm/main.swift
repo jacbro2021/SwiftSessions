@@ -115,3 +115,7 @@ case .right(let right):
     Session.close(e3)
 }
 
+
+// Client
+//let e00 = await Session.send(input, on: e)
+
