@@ -16,15 +16,10 @@ import AsyncAlgorithms
 /// - Parameters:
 ///   - A: The type of messages that can be sent to the endpoint.
 ///   - B: The type of messages that can be received from the endpoint.
-public final class Endpoint<A, B> {
+public struct Endpoint<A, B>: ~Copyable {
     
     /// Underlying asynchronous channel for communication.
     private let channel: AsyncChannel<Sendable>
-    
-    /// A read-only flag indicating whether the instance has been consumed.
-    ///
-    /// This property is set to `true` when the endpoint is consumed and cannot be consumed again.
-    private(set) var isConsumed: Bool = false
     
     /// Initializes a new endpoint with the given asynchronous channel.
     /// - Parameter channel: The underlying asynchronous channel for communication.
@@ -34,7 +29,7 @@ public final class Endpoint<A, B> {
     
     /// Initializes a new channel from an existing channel
     /// - Parameter channel: The channel from which to create the new channel.
-    init<C, D>(from endpoint: Endpoint<C, D>) {
+    init<C, D>(from endpoint: consuming Endpoint<C, D>) {
         self.channel = endpoint.channel
     }
     
@@ -45,9 +40,10 @@ public final class Endpoint<A, B> {
     /// If the channel has not been consumed, a fatal error is triggered, 
     /// indicating a linearity violation.
     deinit {
-        if !isConsumed {
-            fatalError("\(self.description) was not consumed")
-        }
+        // TODO: Ensure there is a check that each endpoint is consumed
+//        if !isConsumed {
+//            fatalError("\(self.description) was not consumed")
+//        }
     }
 
     /// Marks the channel as consumed, ensuring linearity guarantees.
@@ -57,12 +53,11 @@ public final class Endpoint<A, B> {
     /// enforcing the linear usage pattern of session types.
     ///
     /// - Throws: a fatal error if the channel has already been consumed.
-    private func consume() {
-        guard !isConsumed else {
-            fatalError("\(self.description) was consumed twice")
-        }
-        isConsumed = true
-    }
+//    private func consume() {
+//        guard !isConsumed else {
+//            fatalError("\(self.description) was consumed twice")
+//        }
+//    }
     
     /// A human-readable description of the channel, including the message types.
     public var description: String {
@@ -80,7 +75,6 @@ extension Endpoint where A == Empty {
     /// - Throws: a fatal error if the channel has already been consumed.
     /// - Returns: the element received
     func recv() async -> Sendable {
-        consume()
         return await channel.first(where: { _ in true })!
     }
     
@@ -95,7 +89,6 @@ extension Endpoint where B == Empty {
     /// - Parameter element: the element to be sent
     /// - Throws: a fatal error if the channel has already been consumed.
     func send(_ element: Sendable) async {
-        consume()
         await channel.send(element)
     }
     
@@ -108,7 +101,6 @@ extension Endpoint where A == Empty, B == Empty {
     ///
     /// This method closes the channel, signaling the end of communication.
     func close() {
-        consume()
         channel.finish()
     }
     
