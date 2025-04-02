@@ -17,7 +17,7 @@ typealias ATMWithdrawProtocol = Endpoint<Empty, (Double, Endpoint<Or<ATMSuccessP
 typealias ATMSuccessProtocol = Endpoint<Empty, (String, Endpoint<Empty, Empty>)>
 typealias ATMErrorProtocol = Endpoint<Empty, (String, Endpoint<Empty, Empty>)>
 
-var accountBalance: Double = 10.00
+var accountBalance: Double = 10.00 
 
 // ATM
 let e = await Session.create { (e:ATMProtocol) in
