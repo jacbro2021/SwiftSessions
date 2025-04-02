@@ -42,6 +42,16 @@
 			<key>primary</key>
 			<true/>
 		</dict>
+		<key>atm</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>ftp</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 	</dict>
 </dict>
 </plist>
